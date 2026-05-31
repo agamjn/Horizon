@@ -49,9 +49,10 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Repo ships an empty `BreakVideos/` (README only) + gradient fallback; clip files stay local & git-ignored (license). Awaiting user's CC0/royalty-free clips to commit
 - [ ] (Follow-up) Soothing audio on *every* break — most stock clips are silent; add a dedicated ambient audio loop
 
-### Launch at login
-- [ ] `SMAppService.mainApp` register/unregister; reflect `.status` in menu
-- [ ] Test: toggling adds/removes it in System Settings → Login Items
+### Launch at login — ✅ done & user-verified
+- [x] `SMAppService.mainApp` register/unregister via a "Launch at Login" menu toggle
+- [x] `menuWillOpen` refreshes the checkmark from `.status` (AppDelegate is `NSMenuDelegate`)
+- [x] Test: toggling adds/removes Horizon in System Settings → Login Items
 
 ### Robustness
 - [ ] Sleep/wake (recompute from target `Date`; reschedule missed break)

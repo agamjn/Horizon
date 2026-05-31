@@ -2,14 +2,14 @@
 //  AppDelegate.swift
 //  Horizon
 //
-//  Owns the menu-bar status item and its menu. For now the menu can trigger a
-//  break on demand ("Take a Break Now") and quit. The automatic 20-minute timer
-//  arrives in the next step.
+//  Owns the menu-bar status item and its menu: trigger a break on demand, toggle
+//  launch-at-login, and quit. The automatic 20-minute schedule runs via BreakScheduler.
 //
 
 import AppKit
+import ServiceManagement
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// Held for the app's whole lifetime — if released, the menu-bar icon vanishes.
     private var statusItem: NSStatusItem?
@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Drives automatic breaks on the 20-minute schedule.
     private var scheduler: BreakScheduler?
+
+    /// Kept so its checkmark can be refreshed when the menu opens.
+    private var launchAtLoginItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -30,7 +33,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = image
         }
 
-        statusItem.menu = makeMenu()
+        let menu = makeMenu()
+        menu.delegate = self          // so menuWillOpen can refresh dynamic items
+        statusItem.menu = menu
         self.statusItem = statusItem
 
         // Start the automatic break schedule (a break every 20 minutes).
@@ -52,6 +57,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(.separator())
 
+        let launchItem = NSMenuItem(
+            title: "Launch at Login",
+            action: #selector(toggleLaunchAtLogin),
+            keyEquivalent: ""
+        )
+        launchItem.target = self
+        menu.addItem(launchItem)
+        self.launchAtLoginItem = launchItem
+
+        menu.addItem(.separator())
+
         // `terminate(_:)` has no explicit target, so it travels up the responder
         // chain to NSApplication, which handles quitting.
         menu.addItem(
@@ -63,7 +79,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return menu
     }
 
+    // MARK: - NSMenuDelegate
+
+    /// Refresh dynamic menu items just before the menu appears. The user can
+    /// change the login item in System Settings, so we read the real status here
+    /// rather than trusting a cached value.
+    func menuWillOpen(_ menu: NSMenu) {
+        launchAtLoginItem?.state = (SMAppService.mainApp.status == .enabled) ? .on : .off
+    }
+
+    // MARK: - Actions
+
     @objc private func takeBreakNow() {
         scheduler?.triggerBreakNow()
+    }
+
+    @objc private func toggleLaunchAtLogin() {
+        do {
+            if SMAppService.mainApp.status == .enabled {
+                try SMAppService.mainApp.unregister()
+            } else {
+                try SMAppService.mainApp.register()
+            }
+        } catch {
+            NSLog("Horizon: failed to toggle launch-at-login: \(error.localizedDescription)")
+        }
     }
 }
