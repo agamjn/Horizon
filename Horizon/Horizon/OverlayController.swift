@@ -4,9 +4,11 @@
 //
 //  Shows and hides the full-screen break overlay. It puts one window on every
 //  connected display, brings the app forward so the windows can capture input,
-//  and removes everything after the break duration. A separate safety timer
-//  guarantees the overlay always closes even if something goes wrong with the
-//  on-screen countdown — so the user can never get trapped behind it.
+//  locks down system navigation for the break, and removes everything after the
+//  break duration. A separate safety timer guarantees the overlay always closes
+//  even if something goes wrong with the on-screen countdown — so the user can
+//  never get trapped behind it. If the display arrangement changes mid-break, the
+//  window set is rebuilt to keep every screen covered.
 //
 
 import AppKit
@@ -20,28 +22,31 @@ final class OverlayController: NSObject {
     private var windows: [BreakOverlayWindow] = []
     private var safetyTimer: Timer?
     private var isShowing = false
+    private var breakStartedAt: Date?
+    private var currentClip: URL?
 
     /// Called when a break finishes (via × or the timeout). The scheduler uses
     /// this to start counting toward the next break.
     var onBreakEnded: (() -> Void)?
 
+    override init() {
+        super.init()
+        // Rebuild the overlay if a display is connected/disconnected mid-break.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(screensChanged),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
+    }
+
     /// Show the break overlay on all displays.
     func startBreak() {
         guard !isShowing else { return }
         isShowing = true
-
-        // The screen the user is currently on gets the close button.
-        let primaryScreen = NSScreen.main ?? NSScreen.screens.first
+        breakStartedAt = Date()
         // One random clip per break, played (with audio) only on the primary screen.
-        let clipURL = BreakVideoLibrary.randomClip()
-
-        for screen in NSScreen.screens {
-            let isPrimary = (screen == primaryScreen)
-            let window = makeWindow(for: screen, isPrimary: isPrimary,
-                                    videoURL: isPrimary ? clipURL : nil)
-            window.alphaValue = 0
-            windows.append(window)
-        }
+        currentClip = BreakVideoLibrary.randomClip()
 
         // Bring Horizon forward so the borderless windows can become key and
         // absorb keyboard input.
@@ -54,18 +59,9 @@ final class OverlayController: NSObject {
         // Quit (⌘⌥Esc) enabled as a safety hatch.
         NSApp.presentationOptions = [.hideDock, .disableProcessSwitching]
 
-        for window in windows {
-            window.makeKeyAndOrderFront(nil)
-        }
-
-        // Fade in.
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.35
-            for window in windows { window.animator().alphaValue = 1 }
-        }
+        buildWindows(remaining: breakDuration)
 
         // Independent backstop in case the on-screen countdown ever fails.
-        // Target/selector (rather than a closure) keeps this main-actor-clean.
         safetyTimer = Timer.scheduledTimer(
             timeInterval: Double(breakDuration) + 0.5,
             target: self,
@@ -79,6 +75,7 @@ final class OverlayController: NSObject {
     func endBreak() {
         guard isShowing else { return }
         isShowing = false
+        breakStartedAt = nil
 
         // Release the system lock immediately, so full control returns to the user
         // the instant the break ends (via the × button or the timeout).
@@ -101,11 +98,43 @@ final class OverlayController: NSObject {
         onBreakEnded?()
     }
 
+    /// (Re)build one overlay window per current display, covering them all. Used at
+    /// the start of a break and again if the display arrangement changes mid-break.
+    private func buildWindows(remaining: Int) {
+        for window in windows { window.orderOut(nil) }
+        windows.removeAll()
+
+        // The screen the user is currently on gets the close button + the video.
+        let primaryScreen = NSScreen.main ?? NSScreen.screens.first
+        for screen in NSScreen.screens {
+            let isPrimary = (screen == primaryScreen)
+            let window = makeWindow(for: screen, isPrimary: isPrimary,
+                                    videoURL: isPrimary ? currentClip : nil, seconds: remaining)
+            window.alphaValue = 0
+            windows.append(window)
+            window.makeKeyAndOrderFront(nil)
+        }
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.35
+            for window in windows { window.animator().alphaValue = 1 }
+        }
+    }
+
+    @objc private func screensChanged() {
+        guard isShowing, let breakStartedAt else { return }
+        // Keep the countdown honest across the rebuild; the safety timer (which is
+        // not reset here) still ends the break at the original time.
+        let elapsed = Int(Date().timeIntervalSince(breakStartedAt))
+        let remaining = max(1, breakDuration - elapsed)
+        buildWindows(remaining: remaining)
+    }
+
     @objc private func safetyTimerFired() {
         endBreak()
     }
 
-    private func makeWindow(for screen: NSScreen, isPrimary: Bool, videoURL: URL?) -> BreakOverlayWindow {
+    private func makeWindow(for screen: NSScreen, isPrimary: Bool, videoURL: URL?, seconds: Int) -> BreakOverlayWindow {
         let window = BreakOverlayWindow(
             contentRect: screen.frame,
             styleMask: .borderless,
@@ -120,7 +149,7 @@ final class OverlayController: NSObject {
         window.hasShadow = false
         window.isReleasedWhenClosed = false
 
-        let view = BreakView(totalSeconds: breakDuration, showsCloseButton: isPrimary,
+        let view = BreakView(totalSeconds: seconds, showsCloseButton: isPrimary,
                              videoURL: videoURL) { [weak self] in
             self?.endBreak()
         }

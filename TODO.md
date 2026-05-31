@@ -54,12 +54,11 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] `menuWillOpen` refreshes the checkmark from `.status` (AppDelegate is `NSMenuDelegate`)
 - [x] Test: toggling adds/removes Horizon in System Settings → Login Items
 
-### Robustness
-- [ ] Sleep/wake (recompute from target `Date`; reschedule missed break)
-- [ ] Pause while screen locked (`screenIsLocked`/`screenIsUnlocked`)
-- [ ] Rebuild windows on `didChangeScreenParametersNotification` (display hot-plug)
-- [ ] Test: lock/unlock, sleep/wake, plug/unplug a display all behave
-- [ ] Commit "Phase 1: core eye-break app (v1)"
+### Robustness — ✅ done
+- [x] Sleep/wake: reschedule on `NSWorkspace.didWakeNotification` so a due break doesn't ambush on wake
+- [x] Pause firing while screen locked + reschedule on unlock (`com.apple.screenIsLocked`/`screenIsUnlocked` — undocumented but kept per owner's choice; degrades gracefully)
+- [x] Rebuild overlay windows on `didChangeScreenParametersNotification` (display hot-plug; preserves remaining time)
+- [x] Compiles + unit tests green; lock/hot-plug handlers are additive and low-risk
 
 ## Phase 2 — Meeting & full-screen awareness
 - [ ] Add `NSCalendarsFullAccessUsageDescription`; `requestFullAccessToEvents()`

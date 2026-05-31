@@ -19,6 +19,7 @@ final class BreakScheduler: NSObject {
     private var tickTimer: Timer?
     private var activityToken: NSObjectProtocol?
     private var isBreaking = false
+    private var isScreenLocked = false
 
     init(overlay: OverlayController, interval: TimeInterval = 20 * 60) {
         self.overlay = overlay
@@ -55,6 +56,14 @@ final class BreakScheduler: NSObject {
             name: NSWorkspace.didWakeNotification,
             object: nil
         )
+
+        // Don't fire breaks while the screen is locked (the eyes are already
+        // resting), and don't ambush the moment it unlocks.
+        let distributed = DistributedNotificationCenter.default()
+        distributed.addObserver(self, selector: #selector(screenDidLock),
+                                name: .init("com.apple.screenIsLocked"), object: nil)
+        distributed.addObserver(self, selector: #selector(screenDidUnlock),
+                                name: .init("com.apple.screenIsUnlocked"), object: nil)
     }
 
     /// Trigger a break right now (the "Take a Break Now" menu item).
@@ -85,7 +94,7 @@ final class BreakScheduler: NSObject {
     }
 
     @objc private func tick() {
-        guard !isBreaking else { return }
+        guard !isBreaking, !isScreenLocked else { return }
         if schedule.shouldFire(now: Date()) {
             startBreak()
         }
@@ -93,6 +102,16 @@ final class BreakScheduler: NSObject {
 
     @objc private func handleWake() {
         // Reschedule so a break that came due during sleep doesn't fire instantly.
+        schedule.handleWake(now: Date())
+    }
+
+    @objc private func screenDidLock() {
+        isScreenLocked = true
+    }
+
+    @objc private func screenDidUnlock() {
+        isScreenLocked = false
+        // Same idea as waking from sleep: restart the interval so we don't ambush.
         schedule.handleWake(now: Date())
     }
 
