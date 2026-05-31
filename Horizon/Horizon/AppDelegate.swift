@@ -17,6 +17,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Shows and hides the full-screen break overlay.
     private let overlayController = OverlayController()
 
+    /// Drives automatic breaks on the 20-minute schedule.
+    private var scheduler: BreakScheduler?
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
@@ -29,6 +32,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         statusItem.menu = makeMenu()
         self.statusItem = statusItem
+
+        // Start the automatic break schedule (a break every 20 minutes).
+        let scheduler = BreakScheduler(overlay: overlayController)
+        scheduler.start()
+        self.scheduler = scheduler
     }
 
     private func makeMenu() -> NSMenu {
@@ -56,6 +64,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func takeBreakNow() {
-        overlayController.startBreak()
+        scheduler?.triggerBreakNow()
     }
 }

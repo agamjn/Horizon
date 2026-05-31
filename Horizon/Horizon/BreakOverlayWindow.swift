@@ -30,4 +30,12 @@ final class BreakOverlayWindow: NSWindow {
     // Swallow every key press: nothing falls through, and no key dismisses the
     // break. Not calling `super` also avoids the system "beep" for unhandled keys.
     override func keyDown(with event: NSEvent) { /* intentionally ignored */ }
+
+    // Consume scroll and swipe gestures so a Magic Mouse / trackpad horizontal
+    // swipe can't slide the user to another Space out from behind the break.
+    // (Reliable for scroll-based swipes like the Magic Mouse's; the trackpad's
+    // 3-/4-finger Spaces gestures are handled by macOS before any app sees them,
+    // so those would need `disableProcessSwitching` instead.)
+    override func scrollWheel(with event: NSEvent) { /* intentionally consumed */ }
+    override func swipe(with event: NSEvent) { /* intentionally consumed */ }
 }

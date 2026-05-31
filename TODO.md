@@ -30,10 +30,10 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 
 ### Scheduler
 - [x] `BreakSchedule` pure logic (interval · pause · resume · wake) — **TDD: 7 tests green**
-- [ ] `BreakScheduler` class: 1s check timer driving `BreakSchedule`; triggers + reschedules the overlay
-- [ ] App-Nap activity assertion (`beginActivity(.userInitiated)`); reschedule on wake
+- [x] `BreakScheduler` class: 1s check timer driving `BreakSchedule`; triggers + reschedules the overlay
+- [x] App-Nap activity assertion (`beginActivity(.userInitiated)`); reschedule on wake
+- [x] Behavioral test: auto-fires on schedule (verified at a short test interval, then set back to 20 min)
 - [ ] Pause-for-1-hour menu item + "next break in…" countdown
-- [ ] Behavioral test: shorten interval, watch it auto-fire; pause works
 
 ### Overlay — ✅ done & user-verified
 - [x] Borderless `NSWindow` subclass (`canBecomeKey = true`); one window per `NSScreen`
@@ -41,6 +41,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Disable Esc/keys: `cancel(_:)` & `cancelOperation(_:)` no-ops; swallow `keyDown`; ×-only + safety timer
 - [x] Test: covers all displays; input blocked; Esc ignored; only × / 20s closes; other apps keep running
 - [x] Wired to a "Take a Break Now" menu item (manual trigger)
+- [x] Block Space-switching during a break: consume scroll/swipe + `disableProcessSwitching` (Force Quit kept as a safety hatch) — user-verified
 
 ### Break visuals
 - [ ] Source 2–3 **CC0** nature clips (HEVC), compress, bundle, add `CREDITS`
