@@ -27,9 +27,14 @@ Package.resolved
 Pods/
 Carthage/Build/
 
-# Bundled break videos — kept out of the public repo to avoid redistributing
-# third-party stock footage. The app falls back to a gradient when none are present.
-Horizon/Horizon/BreakVideos/
+# Break video clips are NOT committed — typical free-stock licenses restrict
+# redistributing the raw files (a public repo would do that). The folder is kept
+# via its README; drop royalty-free clips in locally and the app picks them up.
+# (Truly CC0 / public-domain clips are fine to commit — add exceptions below.)
+Horizon/Horizon/BreakVideos/*.mp4
+Horizon/Horizon/BreakVideos/*.mov
+Horizon/Horizon/BreakVideos/*.m4v
+Horizon/Horizon/BreakVideos/CREDITS.txt
 
 # Misc
 *.log
