@@ -62,6 +62,28 @@ final class BreakScheduler: NSObject {
         startBreak()
     }
 
+    // MARK: - Menu-facing state
+
+    /// Seconds until the next break (0 if it's due now). Drives the menu countdown.
+    var timeUntilNextBreak: TimeInterval {
+        schedule.timeUntilNextBreak(now: Date())
+    }
+
+    /// Whether breaks are currently paused.
+    var isPaused: Bool {
+        schedule.isPaused(now: Date())
+    }
+
+    /// Pause breaks for one hour.
+    func pauseForOneHour() {
+        schedule.pause(forSeconds: 3600, now: Date())
+    }
+
+    /// Resume breaks immediately, clearing any pause.
+    func resume() {
+        schedule.resume(now: Date())
+    }
+
     @objc private func tick() {
         guard !isBreaking else { return }
         if schedule.shouldFire(now: Date()) {

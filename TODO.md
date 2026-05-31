@@ -23,10 +23,10 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 
 ## Phase 1 — Core eye-break app  *(your usable v1)*
 
-### Menu bar
-- [ ] `MenuBarController`: real icon (SF Symbol) + items (Next break, Take a break now, Pause 1h, Launch at login, Quit)
-- [ ] Rebuild "Next break in…" title in `menuWillOpen`
-- [ ] Test: menu shows correct dynamic countdown
+### Menu bar — ✅ done & user-verified
+- [x] Menu (in `AppDelegate`, `NSMenuDelegate`): icon + "Next break in…", Take a Break Now, Pause for 1 Hour/Resume, Launch at Login, Quit
+- [x] Refresh "Next break in…" + pause/launch state in `menuWillOpen`
+- [x] Test: countdown shows & decreases on reopen; Pause → "Paused" / "Resume" toggles correctly
 
 ### Scheduler
 - [x] `BreakSchedule` pure logic (interval · pause · resume · wake) — **TDD: 7 tests green**

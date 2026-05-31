@@ -2,8 +2,9 @@
 //  AppDelegate.swift
 //  Horizon
 //
-//  Owns the menu-bar status item and its menu: trigger a break on demand, toggle
-//  launch-at-login, and quit. The automatic 20-minute schedule runs via BreakScheduler.
+//  Owns the menu-bar status item and its menu: shows time until the next break,
+//  triggers a break on demand, pauses for an hour, toggles launch-at-login, and
+//  quits. The automatic 20-minute schedule runs via BreakScheduler.
 //
 
 import AppKit
@@ -20,7 +21,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// Drives automatic breaks on the 20-minute schedule.
     private var scheduler: BreakScheduler?
 
-    /// Kept so its checkmark can be refreshed when the menu opens.
+    // Dynamic menu items, refreshed in `menuWillOpen`.
+    private var nextBreakItem: NSMenuItem?
+    private var pauseItem: NSMenuItem?
     private var launchAtLoginItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -47,6 +50,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func makeMenu() -> NSMenu {
         let menu = NSMenu()
 
+        // Status line (no action → automatically shown disabled/greyed).
+        let nextBreak = NSMenuItem(title: "Next break in —", action: nil, keyEquivalent: "")
+        menu.addItem(nextBreak)
+        self.nextBreakItem = nextBreak
+
+        menu.addItem(.separator())
+
         let breakItem = NSMenuItem(
             title: "Take a Break Now",
             action: #selector(takeBreakNow),
@@ -54,6 +64,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         )
         breakItem.target = self
         menu.addItem(breakItem)
+
+        let pause = NSMenuItem(
+            title: "Pause for 1 Hour",
+            action: #selector(togglePause),
+            keyEquivalent: ""
+        )
+        pause.target = self
+        menu.addItem(pause)
+        self.pauseItem = pause
 
         menu.addItem(.separator())
 
@@ -81,17 +100,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: - NSMenuDelegate
 
-    /// Refresh dynamic menu items just before the menu appears. The user can
-    /// change the login item in System Settings, so we read the real status here
-    /// rather than trusting a cached value.
+    /// Refresh dynamic menu items just before the menu appears.
     func menuWillOpen(_ menu: NSMenu) {
         launchAtLoginItem?.state = (SMAppService.mainApp.status == .enabled) ? .on : .off
+
+        guard let scheduler else { return }
+        if scheduler.isPaused {
+            nextBreakItem?.title = "Paused"
+            pauseItem?.title = "Resume"
+        } else {
+            nextBreakItem?.title = "Next break in \(formatted(scheduler.timeUntilNextBreak))"
+            pauseItem?.title = "Pause for 1 Hour"
+        }
     }
 
     // MARK: - Actions
 
     @objc private func takeBreakNow() {
         scheduler?.triggerBreakNow()
+    }
+
+    @objc private func togglePause() {
+        guard let scheduler else { return }
+        if scheduler.isPaused {
+            scheduler.resume()
+        } else {
+            scheduler.pauseForOneHour()
+        }
     }
 
     @objc private func toggleLaunchAtLogin() {
@@ -104,5 +139,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         } catch {
             NSLog("Horizon: failed to toggle launch-at-login: \(error.localizedDescription)")
         }
+    }
+
+    // MARK: - Helpers
+
+    /// Formats seconds as "M:SS" for the countdown line.
+    private func formatted(_ seconds: TimeInterval) -> String {
+        let total = max(0, Int(seconds.rounded()))
+        return String(format: "%d:%02d", total / 60, total % 60)
     }
 }
