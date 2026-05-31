@@ -32,9 +32,13 @@ final class OverlayController: NSObject {
 
         // The screen the user is currently on gets the close button.
         let primaryScreen = NSScreen.main ?? NSScreen.screens.first
+        // One random clip per break, played (with audio) only on the primary screen.
+        let clipURL = BreakVideoLibrary.randomClip()
 
         for screen in NSScreen.screens {
-            let window = makeWindow(for: screen, isPrimary: screen == primaryScreen)
+            let isPrimary = (screen == primaryScreen)
+            let window = makeWindow(for: screen, isPrimary: isPrimary,
+                                    videoURL: isPrimary ? clipURL : nil)
             window.alphaValue = 0
             windows.append(window)
         }
@@ -101,7 +105,7 @@ final class OverlayController: NSObject {
         endBreak()
     }
 
-    private func makeWindow(for screen: NSScreen, isPrimary: Bool) -> BreakOverlayWindow {
+    private func makeWindow(for screen: NSScreen, isPrimary: Bool, videoURL: URL?) -> BreakOverlayWindow {
         let window = BreakOverlayWindow(
             contentRect: screen.frame,
             styleMask: .borderless,
@@ -116,7 +120,8 @@ final class OverlayController: NSObject {
         window.hasShadow = false
         window.isReleasedWhenClosed = false
 
-        let view = BreakView(totalSeconds: breakDuration, showsCloseButton: isPrimary) { [weak self] in
+        let view = BreakView(totalSeconds: breakDuration, showsCloseButton: isPrimary,
+                             videoURL: videoURL) { [weak self] in
             self?.endBreak()
         }
         window.contentView = NSHostingView(rootView: view)

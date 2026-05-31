@@ -27,5 +27,9 @@ Package.resolved
 Pods/
 Carthage/Build/
 
+# Bundled break videos — kept out of the public repo to avoid redistributing
+# third-party stock footage. The app falls back to a gradient when none are present.
+Horizon/Horizon/BreakVideos/
+
 # Misc
 *.log

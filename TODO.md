@@ -44,10 +44,9 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Block Space-switching during a break: consume scroll/swipe + `disableProcessSwitching` (Force Quit kept as a safety hatch) — user-verified
 
 ### Break visuals
-- [ ] Source 2–3 **CC0** nature clips (HEVC), compress, bundle, add `CREDITS`
-- [ ] `BreakView` (SwiftUI via `NSHostingView`): looping `AVQueuePlayer`+`AVPlayerLooper`+`AVPlayerLayer`, message, countdown, tiny ×
-- [ ] Audio on main screen only; dimmed bg + countdown on secondaries; one random clip/break
-- [ ] Test: video loops seamlessly; audio only on main; countdown accurate
+- [x] Video engine: looping `AVQueuePlayer`+`AVPlayerLooper`+`AVPlayerLayer` via SwiftUI `NSViewRepresentable`; one random clip/break; audio on primary only; **gradient fallback when no clips bundled**
+- [ ] Add clips to `BreakVideos/` (gitignored, license-clean) + a `CREDITS` note
+- [ ] Test: video loops seamlessly; audio plays only on the primary screen; countdown stays legible over footage
 
 ### Launch at login
 - [ ] `SMAppService.mainApp` register/unregister; reflect `.status` in menu
