@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		3C1E0A672FCC265100302BBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C1E0A3B2FCC1DD400302BBD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3C1E0A422FCC1DD400302BBD;
+			remoteInfo = Horizon;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		3C1E0A432FCC1DD400302BBD /* Horizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C1E0A632FCC265100302BBD /* HorizonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HorizonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = Horizon;
 			sourceTree = "<group>";
 		};
+		3C1E0A642FCC265100302BBD /* HorizonTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HorizonTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		3C1E0A402FCC1DD400302BBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3C1E0A602FCC265100302BBD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				3C1E0A452FCC1DD400302BBD /* Horizon */,
+				3C1E0A642FCC265100302BBD /* HorizonTests */,
 				3C1E0A442FCC1DD400302BBD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				3C1E0A432FCC1DD400302BBD /* Horizon.app */,
+				3C1E0A632FCC265100302BBD /* HorizonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 3C1E0A432FCC1DD400302BBD /* Horizon.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3C1E0A622FCC265100302BBD /* HorizonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3C1E0A692FCC265100302BBD /* Build configuration list for PBXNativeTarget "HorizonTests" */;
+			buildPhases = (
+				3C1E0A5F2FCC265100302BBD /* Sources */,
+				3C1E0A602FCC265100302BBD /* Frameworks */,
+				3C1E0A612FCC265100302BBD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3C1E0A682FCC265100302BBD /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3C1E0A642FCC265100302BBD /* HorizonTests */,
+			);
+			name = HorizonTests;
+			packageProductDependencies = (
+			);
+			productName = HorizonTests;
+			productReference = 3C1E0A632FCC265100302BBD /* HorizonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					3C1E0A422FCC1DD400302BBD = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					3C1E0A622FCC265100302BBD = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 3C1E0A422FCC1DD400302BBD;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				3C1E0A422FCC1DD400302BBD /* Horizon */,
+				3C1E0A622FCC265100302BBD /* HorizonTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3C1E0A412FCC1DD400302BBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3C1E0A612FCC265100302BBD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3C1E0A5F2FCC265100302BBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3C1E0A682FCC265100302BBD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3C1E0A422FCC1DD400302BBD /* Horizon */;
+			targetProxy = 3C1E0A672FCC265100302BBD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3C1E0A4C2FCC1DD500302BBD /* Debug */ = {
@@ -305,6 +380,44 @@
 			};
 			name = Release;
 		};
+		3C1E0A6A2FCC265100302BBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.agamjn.HorizonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horizon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Horizon";
+			};
+			name = Debug;
+		};
+		3C1E0A6B2FCC265100302BBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.agamjn.HorizonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horizon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Horizon";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -322,6 +435,15 @@
 			buildConfigurations = (
 				3C1E0A4F2FCC1DD500302BBD /* Debug */,
 				3C1E0A502FCC1DD500302BBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3C1E0A692FCC265100302BBD /* Build configuration list for PBXNativeTarget "HorizonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C1E0A6A2FCC265100302BBD /* Debug */,
+				3C1E0A6B2FCC265100302BBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

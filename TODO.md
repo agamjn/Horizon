@@ -29,10 +29,11 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [ ] Test: menu shows correct dynamic countdown
 
 ### Scheduler
-- [ ] `BreakScheduler`: next break as absolute `Date` + 1s check timer  *(tests first)*
-- [ ] App-Nap activity assertion (`beginActivity(.userInitiated)`)
-- [ ] Pause-for-1-hour, "take a break now"
-- [ ] Tests: fires at target; pause suppresses; resumes correctly
+- [x] `BreakSchedule` pure logic (interval · pause · resume · wake) — **TDD: 7 tests green**
+- [ ] `BreakScheduler` class: 1s check timer driving `BreakSchedule`; triggers + reschedules the overlay
+- [ ] App-Nap activity assertion (`beginActivity(.userInitiated)`); reschedule on wake
+- [ ] Pause-for-1-hour menu item + "next break in…" countdown
+- [ ] Behavioral test: shorten interval, watch it auto-fire; pause works
 
 ### Overlay — ✅ done & user-verified
 - [x] Borderless `NSWindow` subclass (`canBecomeKey = true`); one window per `NSScreen`
