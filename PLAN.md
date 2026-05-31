@@ -183,8 +183,9 @@ Settings → General → Login Items.
 *Goal: silently skip breaks during calendar meetings (incl. Google Calendar synced into
 macOS) and while a foreground app is in native full-screen.*
 
-1. Add **`NSCalendarsFullAccessUsageDescription`** to Info; request access with
-   `EKEventStore().requestFullAccessToEvents()`.
+1. Add **`NSCalendarsFullAccessUsageDescription`** to Info **and the
+   `com.apple.security.personal-information.calendars` entitlement** (App Sandbox is on);
+   request access with `EKEventStore().requestFullAccessToEvents()`.
 2. **MeetingChecker (calendar):** query `predicateForEvents` for a 1-minute window around
    "now"; consider you busy if an event is `availability == .busy`, **excluding all-day
    events and invitations you've declined**. (Google calendars added in **System Settings →
@@ -218,7 +219,7 @@ Not needed for build-from-source.
 | Video | `AVQueuePlayer` + `AVPlayerLooper` + `AVPlayerLayer` (`.resizeAspectFill`); local **HEVC** `.mov/.mp4`; keep strong refs to player/looper/windows; one random clip per break; audio on main screen only |
 | Launch at login | `SMAppService.mainApp.register()`; read `.status` for the menu state (don't trust UserDefaults alone) |
 | Calendar (Phase 2) | `requestFullAccessToEvents()` + `NSCalendarsFullAccessUsageDescription`; filter `.busy`, drop all-day + declined; Google-via-Internet-Accounts works |
-| Signing / sandbox | Automatic signing with your **free Personal Team**; **App Sandbox OFF** for v1 (so no calendars entitlement needed — just the usage string); notarize only to ship prebuilt binaries |
+| Signing / sandbox | Automatic signing with your **free Personal Team**. **Keep Xcode 26's default App Sandbox ON** (good for a distributed app); add the `com.apple.security.personal-information.calendars` entitlement in Phase 2 for EventKit, and revisit only if full-screen detection needs broader access. Notarize only to ship prebuilt binaries |
 | Timer | Schedule next break as an absolute `Date`; 1s check timer; `ProcessInfo.beginActivity(.userInitiated, …)` to dodge App Nap |
 | Sleep/lock/displays | Observe `NSWorkspace` sleep/wake; pause while screen locked (`com.apple.screenIsLocked`); rebuild windows on `didChangeScreenParametersNotification` |
 | Safety | Independent `asyncAfter` 20s dismissal so a missed timer can never trap you behind the overlay |

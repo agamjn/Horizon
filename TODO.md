@@ -7,19 +7,19 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 
 ## Phase 0 — Setup
 
-### 0a · Repo & docs  *(no Xcode needed)*
-- [ ] Write project docs: PLAN.md, README.md, MIT LICENSE, Swift `.gitignore`, TODO.md
-- [ ] `git init` (branch `main`) and make the first commit
-- [ ] Create GitHub repo `agamjn/Horizon` (**private**) and push
-- [ ] Verify: repo exists on GitHub, `origin` remote set, first commit pushed
+### 0a · Repo & docs  *(no Xcode needed)* — ✅ done
+- [x] Write project docs: PLAN.md, README.md, MIT LICENSE, Swift `.gitignore`, TODO.md
+- [x] `git init` (branch `main`) and make the first commit
+- [x] Create GitHub repo `agamjn/Horizon` (**private**) and push
+- [x] Verify: repo exists on GitHub, `origin` remote set, first commit pushed
 
-### 0b · Xcode project  *(needs Xcode installed)*
-- [ ] **(You)** Install Xcode from the Mac App Store; accept license + install components
-- [ ] Create a macOS **App** project "Horizon" (SwiftUI, Swift), bundle id `io.github.agamjn.Horizon`
-- [ ] Set **Application is agent (UIElement) = YES** (`LSUIElement`)
-- [ ] Replace default window with `AppDelegate` + placeholder `NSStatusItem`; Quit → `terminate(nil)`
-- [ ] Verify: builds & runs; menu-bar icon shows; **no** Dock icon; **no** window; Quit works
-- [ ] Commit "Phase 0: empty menu-bar app"
+### 0b · Xcode project  *(needs Xcode installed)* — ✅ done
+- [x] **(You)** Install Xcode from the Mac App Store; accept license + install components
+- [x] Create a macOS **App** project "Horizon" (SwiftUI, Swift), bundle id `io.github.agamjn.Horizon`
+- [x] Set **Application is agent (UIElement) = YES** (`LSUIElement`)
+- [x] Replace default window with `AppDelegate` + `NSStatusItem`; Quit → `terminate(_:)`
+- [x] Verify: builds & runs; menu-bar icon shows; **no** Dock icon; **no** window; Quit works
+- [x] Commit "Phase 0: menu-bar shell"
 
 ## Phase 1 — Core eye-break app  *(your usable v1)*
 
