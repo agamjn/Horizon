@@ -12,7 +12,7 @@ import Foundation
 struct BreakSchedule {
 
     /// Seconds between breaks (20 minutes by default — the "20" in 20-20-20).
-    let interval: TimeInterval
+    private(set) var interval: TimeInterval
 
     /// When the next break is due.
     private(set) var nextFireDate: Date
@@ -46,6 +46,12 @@ struct BreakSchedule {
     /// is skipped.
     mutating func scheduleNext(from now: Date) {
         nextFireDate = now.addingTimeInterval(interval)
+    }
+
+    /// Change the interval between breaks and restart the countdown from `now`.
+    mutating func setInterval(_ seconds: TimeInterval, now: Date) {
+        interval = seconds
+        nextFireDate = now.addingTimeInterval(seconds)
     }
 
     /// Pause breaks for a number of seconds (e.g. 3600 for "1 hour"). The next

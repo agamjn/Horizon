@@ -15,6 +15,7 @@ screen right back.
 
 - 🖥️ **Lives in the menu bar** — no Dock icon, no windows; just a quiet eye icon.
 - ⏱️ **Automatic break every 20 minutes**, with a live “next break in M:SS” countdown.
+- ⚙️ **Adjustable** interval and break length right from the menu bar (presets, saved across launches; defaults to 20 min / 20 s).
 - 🌲 **Full‑screen calming break on every display**, with a 20‑second countdown.
 - 🎬 **Optional nature video + ambient audio** that you supply (see [Assets](#assets-break-video--audio)). With none present it shows a calm gradient — the app works fine either way.
 - 🔒 **Actually makes you pause.** During a break it blocks clicks, typing, Cmd‑Tab, Mission Control, and Spaces‑switching, so you can’t reflexively work through it. (Force Quit stays available as a safety hatch, and the break always auto‑closes after 20 s.)
@@ -54,6 +55,8 @@ Click the eye icon in the menu bar:
 | **Next break in M:SS** | Time remaining until the next automatic break |
 | **Take a Break Now** | Start a break immediately |
 | **Pause for 1 Hour** / **Resume** | Temporarily stop breaks (e.g. during a presentation) |
+| **Break Every** | How often a break fires (15–60 min; default 20) |
+| **Break Length** | How long each break lasts (20–60 sec; default 20) |
 | **Launch at Login** | Start Horizon automatically when you log in |
 | **Quit Horizon** | Quit the app |
 

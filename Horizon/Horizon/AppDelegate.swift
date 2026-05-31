@@ -3,8 +3,9 @@
 //  Horizon
 //
 //  Owns the menu-bar status item and its menu: shows time until the next break,
-//  triggers a break on demand, pauses for an hour, toggles launch-at-login, and
-//  quits. The automatic 20-minute schedule runs via BreakScheduler.
+//  triggers a break on demand, pauses for an hour, lets you adjust how often
+//  breaks fire and how long they last, toggles launch-at-login, and quits. The
+//  automatic schedule runs via BreakScheduler.
 //
 
 import AppKit
@@ -18,12 +19,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// Shows and hides the full-screen break overlay.
     private let overlayController = OverlayController()
 
-    /// Drives automatic breaks on the 20-minute schedule.
+    /// Drives automatic breaks on the schedule.
     private var scheduler: BreakScheduler?
+
+    // Preset choices offered in the submenus.
+    private let intervalPresetsMinutes = [15, 20, 25, 30, 45, 60]
+    private let durationPresetsSeconds = [20, 30, 45, 60]
 
     // Dynamic menu items, refreshed in `menuWillOpen`.
     private var nextBreakItem: NSMenuItem?
     private var pauseItem: NSMenuItem?
+    private var intervalItem: NSMenuItem?
+    private var durationItem: NSMenuItem?
     private var launchAtLoginItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -41,7 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem.menu = menu
         self.statusItem = statusItem
 
-        // Start the automatic break schedule (a break every 20 minutes).
+        // Start the automatic break schedule (uses the saved interval).
         let scheduler = BreakScheduler(overlay: overlayController)
         scheduler.start()
         self.scheduler = scheduler
@@ -57,30 +64,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         menu.addItem(.separator())
 
-        let breakItem = NSMenuItem(
-            title: "Take a Break Now",
-            action: #selector(takeBreakNow),
-            keyEquivalent: ""
-        )
+        let breakItem = NSMenuItem(title: "Take a Break Now",
+                                   action: #selector(takeBreakNow), keyEquivalent: "")
         breakItem.target = self
         menu.addItem(breakItem)
 
-        let pause = NSMenuItem(
-            title: "Pause for 1 Hour",
-            action: #selector(togglePause),
-            keyEquivalent: ""
-        )
+        let pause = NSMenuItem(title: "Pause for 1 Hour",
+                               action: #selector(togglePause), keyEquivalent: "")
         pause.target = self
         menu.addItem(pause)
         self.pauseItem = pause
 
         menu.addItem(.separator())
 
-        let launchItem = NSMenuItem(
-            title: "Launch at Login",
-            action: #selector(toggleLaunchAtLogin),
-            keyEquivalent: ""
-        )
+        // "Break Every" submenu — how often a break fires.
+        let interval = NSMenuItem(title: "Break Every", action: nil, keyEquivalent: "")
+        interval.submenu = makeIntervalSubmenu()
+        menu.addItem(interval)
+        self.intervalItem = interval
+
+        // "Break Length" submenu — how long each break lasts.
+        let duration = NSMenuItem(title: "Break Length", action: nil, keyEquivalent: "")
+        duration.submenu = makeDurationSubmenu()
+        menu.addItem(duration)
+        self.durationItem = duration
+
+        menu.addItem(.separator())
+
+        let launchItem = NSMenuItem(title: "Launch at Login",
+                                    action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchItem.target = self
         menu.addItem(launchItem)
         self.launchAtLoginItem = launchItem
@@ -89,13 +101,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         // `terminate(_:)` has no explicit target, so it travels up the responder
         // chain to NSApplication, which handles quitting.
-        menu.addItem(
-            withTitle: "Quit Horizon",
-            action: #selector(NSApplication.terminate(_:)),
-            keyEquivalent: "q"
-        )
+        menu.addItem(withTitle: "Quit Horizon",
+                     action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
 
         return menu
+    }
+
+    private func makeIntervalSubmenu() -> NSMenu {
+        let submenu = NSMenu()
+        for minutes in intervalPresetsMinutes {
+            let item = NSMenuItem(title: "\(minutes) min",
+                                  action: #selector(selectInterval(_:)), keyEquivalent: "")
+            item.target = self
+            item.tag = minutes
+            submenu.addItem(item)
+        }
+        return submenu
+    }
+
+    private func makeDurationSubmenu() -> NSMenu {
+        let submenu = NSMenu()
+        for seconds in durationPresetsSeconds {
+            let item = NSMenuItem(title: "\(seconds) sec",
+                                  action: #selector(selectDuration(_:)), keyEquivalent: "")
+            item.target = self
+            item.tag = seconds
+            submenu.addItem(item)
+        }
+        return submenu
     }
 
     // MARK: - NSMenuDelegate
@@ -103,6 +136,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// Refresh dynamic menu items just before the menu appears.
     func menuWillOpen(_ menu: NSMenu) {
         launchAtLoginItem?.state = (SMAppService.mainApp.status == .enabled) ? .on : .off
+
+        // Current settings → titles + checkmarks.
+        let currentMinutes = Int((BreakSettings.intervalSeconds / 60).rounded())
+        intervalItem?.title = "Break Every: \(currentMinutes) min"
+        intervalItem?.submenu?.items.forEach { $0.state = ($0.tag == currentMinutes) ? .on : .off }
+
+        let currentDuration = BreakSettings.durationSeconds
+        durationItem?.title = "Break Length: \(currentDuration) sec"
+        durationItem?.submenu?.items.forEach { $0.state = ($0.tag == currentDuration) ? .on : .off }
 
         guard let scheduler else { return }
         if scheduler.isPaused {
@@ -127,6 +169,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         } else {
             scheduler.pauseForOneHour()
         }
+    }
+
+    @objc private func selectInterval(_ sender: NSMenuItem) {
+        let seconds = TimeInterval(sender.tag * 60)
+        BreakSettings.intervalSeconds = seconds
+        scheduler?.setInterval(seconds)
+    }
+
+    @objc private func selectDuration(_ sender: NSMenuItem) {
+        BreakSettings.durationSeconds = sender.tag   // applied on the next break
     }
 
     @objc private func toggleLaunchAtLogin() {

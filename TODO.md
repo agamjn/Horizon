@@ -27,6 +27,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Menu (in `AppDelegate`, `NSMenuDelegate`): icon + "Next break in…", Take a Break Now, Pause for 1 Hour/Resume, Launch at Login, Quit
 - [x] Refresh "Next break in…" + pause/launch state in `menuWillOpen`
 - [x] Test: countdown shows & decreases on reopen; Pause → "Paused" / "Resume" toggles correctly
+- [x] **Adjustable interval (15–60 min) + break length (20–60 sec)** submenus, persisted via `BreakSettings` (UserDefaults); checkmarks reflect current; `setInterval` unit-tested *(menu UI + persistence pending a quick manual check — committed while user was remote)*
 
 ### Scheduler
 - [x] `BreakSchedule` pure logic (interval · pause · resume · wake) — **TDD: 7 tests green**

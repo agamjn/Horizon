@@ -18,7 +18,7 @@ import SwiftUI
 @MainActor
 final class OverlayController: NSObject {
 
-    private let breakDuration = 20  // seconds
+    private var currentDuration = BreakSettings.defaultDurationSeconds  // seconds; read per break
 
     private var windows: [BreakOverlayWindow] = []
     private var safetyTimer: Timer?
@@ -48,6 +48,7 @@ final class OverlayController: NSObject {
         guard !isShowing else { return }
         isShowing = true
         breakStartedAt = Date()
+        currentDuration = BreakSettings.durationSeconds
 
         // One random clip per break, played only on the primary screen.
         currentClip = BreakVideoLibrary.randomClip()
@@ -70,11 +71,11 @@ final class OverlayController: NSObject {
         // Quit (⌘⌥Esc) enabled as a safety hatch.
         NSApp.presentationOptions = [.hideDock, .disableProcessSwitching]
 
-        buildWindows(remaining: breakDuration)
+        buildWindows(remaining: currentDuration)
 
         // Independent backstop in case the on-screen countdown ever fails.
         safetyTimer = Timer.scheduledTimer(
-            timeInterval: Double(breakDuration) + 0.5,
+            timeInterval: Double(currentDuration) + 0.5,
             target: self,
             selector: #selector(safetyTimerFired),
             userInfo: nil,
@@ -139,7 +140,7 @@ final class OverlayController: NSObject {
         // Keep the countdown honest across the rebuild; the safety timer (which is
         // not reset here) still ends the break at the original time.
         let elapsed = Int(Date().timeIntervalSince(breakStartedAt))
-        let remaining = max(1, breakDuration - elapsed)
+        let remaining = max(1, currentDuration - elapsed)
         buildWindows(remaining: remaining)
     }
 

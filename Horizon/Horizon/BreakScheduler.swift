@@ -21,9 +21,9 @@ final class BreakScheduler: NSObject {
     private var isBreaking = false
     private var isScreenLocked = false
 
-    init(overlay: OverlayController, interval: TimeInterval = 20 * 60) {
+    init(overlay: OverlayController) {
         self.overlay = overlay
-        self.schedule = BreakSchedule(interval: interval, now: Date())
+        self.schedule = BreakSchedule(interval: BreakSettings.intervalSeconds, now: Date())
         super.init()
 
         // When a break ends (manual or automatic), start counting the next one.
@@ -91,6 +91,11 @@ final class BreakScheduler: NSObject {
     /// Resume breaks immediately, clearing any pause.
     func resume() {
         schedule.resume(now: Date())
+    }
+
+    /// Change how often breaks fire, restarting the countdown.
+    func setInterval(_ seconds: TimeInterval) {
+        schedule.setInterval(seconds, now: Date())
     }
 
     @objc private func tick() {

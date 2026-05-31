@@ -46,8 +46,10 @@ never pauses your actual work (downloads, music, builds keep running underneath)
   treated the same as a meeting (see §4). Windowed apps and non-full-screen video still get
   breaks normally.
 
-**Fixed settings for v1:** 20-min interval, 20-sec break, no preferences window. (Easy to
-make adjustable later.)
+**Adjustable from the menu bar:** the break **interval** (15/20/25/30/45/60 min) and **break
+length** (20/30/45/60 sec) are pickable from submenus and persist across launches
+(UserDefaults via `BreakSettings`); defaults are 20 min / 20 sec. (The "20 feet" is a
+real-world cue, not a setting.)
 
 ---
 

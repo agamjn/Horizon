@@ -86,4 +86,13 @@ struct BreakScheduleTests {
         #expect(schedule.shouldFire(now: afterPause) == false)
         #expect(schedule.shouldFire(now: afterPause.addingTimeInterval(interval)) == true)
     }
+
+    @Test func changingTheIntervalReschedulesFromNow() {
+        var schedule = BreakSchedule(interval: interval, now: start)
+        let changeAt = start.addingTimeInterval(300)     // 5 minutes in
+        schedule.setInterval(30 * 60, now: changeAt)     // switch to a 30-minute interval
+        #expect(schedule.timeUntilNextBreak(now: changeAt) == 30 * 60)
+        #expect(schedule.shouldFire(now: changeAt.addingTimeInterval(30 * 60 - 1)) == false)
+        #expect(schedule.shouldFire(now: changeAt.addingTimeInterval(30 * 60)) == true)
+    }
 }
