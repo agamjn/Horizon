@@ -34,11 +34,12 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [ ] Pause-for-1-hour, "take a break now"
 - [ ] Tests: fires at target; pause suppresses; resumes correctly
 
-### Overlay
-- [ ] Borderless `NSWindow` subclass (`canBecomeKey = true`); one window per `NSScreen`
-- [ ] `level = .screenSaver`; `collectionBehavior` flags; hide menu bar; fade in/out
-- [ ] Disable Esc/keys: `cancel(_:)` & `cancelOperation(_:)` no-ops; swallow `keyDown`; ×-only + hard 20s deadline
-- [ ] Test: covers all displays; input blocked; only × / 20s closes; other apps keep running
+### Overlay — ✅ done & user-verified
+- [x] Borderless `NSWindow` subclass (`canBecomeKey = true`); one window per `NSScreen`
+- [x] `level = .screenSaver` (also covers the menu bar — no presentationOptions needed); `collectionBehavior` flags; fade in/out
+- [x] Disable Esc/keys: `cancel(_:)` & `cancelOperation(_:)` no-ops; swallow `keyDown`; ×-only + safety timer
+- [x] Test: covers all displays; input blocked; Esc ignored; only × / 20s closes; other apps keep running
+- [x] Wired to a "Take a Break Now" menu item (manual trigger)
 
 ### Break visuals
 - [ ] Source 2–3 **CC0** nature clips (HEVC), compress, bundle, add `CREDITS`

@@ -2,18 +2,20 @@
 //  AppDelegate.swift
 //  Horizon
 //
-//  Owns the menu-bar status item. For this first milestone it only shows an icon
-//  and a "Quit" command — the 20-minute timer and the break overlay arrive in
-//  Phase 1.
+//  Owns the menu-bar status item and its menu. For now the menu can trigger a
+//  break on demand ("Take a Break Now") and quit. The automatic 20-minute timer
+//  arrives in the next step.
 //
 
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
-    /// Held for the app's whole lifetime — if this is released, the menu-bar
-    /// icon disappears.
+    /// Held for the app's whole lifetime — if released, the menu-bar icon vanishes.
     private var statusItem: NSStatusItem?
+
+    /// Shows and hides the full-screen break overlay.
+    private let overlayController = OverlayController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -25,16 +27,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = image
         }
 
-        // Minimal menu for now: just Quit. `terminate(_:)` has no explicit target,
-        // so it travels up the responder chain to NSApplication, which handles it.
+        statusItem.menu = makeMenu()
+        self.statusItem = statusItem
+    }
+
+    private func makeMenu() -> NSMenu {
         let menu = NSMenu()
+
+        let breakItem = NSMenuItem(
+            title: "Take a Break Now",
+            action: #selector(takeBreakNow),
+            keyEquivalent: ""
+        )
+        breakItem.target = self
+        menu.addItem(breakItem)
+
+        menu.addItem(.separator())
+
+        // `terminate(_:)` has no explicit target, so it travels up the responder
+        // chain to NSApplication, which handles quitting.
         menu.addItem(
             withTitle: "Quit Horizon",
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
-        statusItem.menu = menu
 
-        self.statusItem = statusItem
+        return menu
+    }
+
+    @objc private func takeBreakNow() {
+        overlayController.startBreak()
     }
 }
