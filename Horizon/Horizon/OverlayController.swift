@@ -4,11 +4,12 @@
 //
 //  Shows and hides the full-screen break overlay. It puts one window on every
 //  connected display, brings the app forward so the windows can capture input,
-//  locks down system navigation for the break, and removes everything after the
-//  break duration. A separate safety timer guarantees the overlay always closes
-//  even if something goes wrong with the on-screen countdown — so the user can
-//  never get trapped behind it. If the display arrangement changes mid-break, the
-//  window set is rebuilt to keep every screen covered.
+//  locks down system navigation for the break, plays optional ambient audio, and
+//  removes everything after the break duration. A separate safety timer guarantees
+//  the overlay always closes even if something goes wrong with the on-screen
+//  countdown — so the user can never get trapped behind it. If the display
+//  arrangement changes mid-break, the window set is rebuilt to keep every screen
+//  covered.
 //
 
 import AppKit
@@ -24,6 +25,8 @@ final class OverlayController: NSObject {
     private var isShowing = false
     private var breakStartedAt: Date?
     private var currentClip: URL?
+    private var videoMuted = false
+    private let ambientPlayer = AmbientAudioPlayer()
 
     /// Called when a break finishes (via × or the timeout). The scheduler uses
     /// this to start counting toward the next break.
@@ -45,8 +48,16 @@ final class OverlayController: NSObject {
         guard !isShowing else { return }
         isShowing = true
         breakStartedAt = Date()
-        // One random clip per break, played (with audio) only on the primary screen.
+
+        // One random clip per break, played only on the primary screen.
         currentClip = BreakVideoLibrary.randomClip()
+
+        // Optional ambient audio. When a track plays, the video is muted so the
+        // soothing audio is consistent regardless of which clip is showing.
+        if let track = BreakAudioLibrary.randomTrack() {
+            ambientPlayer.start(url: track)
+        }
+        videoMuted = ambientPlayer.isPlaying
 
         // Bring Horizon forward so the borderless windows can become key and
         // absorb keyboard input.
@@ -76,6 +87,8 @@ final class OverlayController: NSObject {
         guard isShowing else { return }
         isShowing = false
         breakStartedAt = nil
+
+        ambientPlayer.stop()
 
         // Release the system lock immediately, so full control returns to the user
         // the instant the break ends (via the × button or the timeout).
@@ -150,7 +163,7 @@ final class OverlayController: NSObject {
         window.isReleasedWhenClosed = false
 
         let view = BreakView(totalSeconds: seconds, showsCloseButton: isPrimary,
-                             videoURL: videoURL) { [weak self] in
+                             videoURL: videoURL, videoMuted: videoMuted) { [weak self] in
             self?.endBreak()
         }
         window.contentView = NSHostingView(rootView: view)

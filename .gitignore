@@ -27,14 +27,12 @@ Package.resolved
 Pods/
 Carthage/Build/
 
-# Break video clips are NOT committed — typical free-stock licenses restrict
-# redistributing the raw files (a public repo would do that). The folder is kept
-# via its README; drop royalty-free clips in locally and the app picks them up.
-# (Truly CC0 / public-domain clips are fine to commit — add exceptions below.)
-Horizon/Horizon/BreakVideos/*.mp4
-Horizon/Horizon/BreakVideos/*.mov
-Horizon/Horizon/BreakVideos/*.m4v
-Horizon/Horizon/BreakVideos/CREDITS.txt
+# Local media assets (break videos & audio) are NOT committed — typical stock licenses
+# restrict redistributing the raw files. The app falls back to a gradient / silence when
+# they're absent (see the "Assets" section of the README). Truly CC0 / public-domain files
+# may be committed via explicit exceptions below.
+Horizon/Horizon/BreakVideos/
+Horizon/Horizon/BreakAudio/
 
 # Misc
 *.log

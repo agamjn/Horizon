@@ -18,15 +18,19 @@ struct BreakView: View {
     let showsCloseButton: Bool
     /// A nature clip to play behind the message, or nil to use the gradient.
     let videoURL: URL?
+    /// Mute the video's own audio (used when a separate ambient track is playing).
+    let videoMuted: Bool
     /// Called when the user clicks × or the countdown reaches zero.
     let onClose: () -> Void
 
     @State private var remaining: Int
 
-    init(totalSeconds: Int, showsCloseButton: Bool, videoURL: URL?, onClose: @escaping () -> Void) {
+    init(totalSeconds: Int, showsCloseButton: Bool, videoURL: URL?, videoMuted: Bool,
+         onClose: @escaping () -> Void) {
         self.totalSeconds = totalSeconds
         self.showsCloseButton = showsCloseButton
         self.videoURL = videoURL
+        self.videoMuted = videoMuted
         self.onClose = onClose
         _remaining = State(initialValue: totalSeconds)
     }
@@ -90,7 +94,7 @@ struct BreakView: View {
     @ViewBuilder
     private var background: some View {
         if let videoURL {
-            VideoBackgroundView(url: videoURL, muted: false)
+            VideoBackgroundView(url: videoURL, muted: videoMuted)
                 .ignoresSafeArea()
             // A soft scrim so white text stays readable over bright footage.
             Color.black.opacity(0.28)

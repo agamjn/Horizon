@@ -47,7 +47,8 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Video engine: looping `AVQueuePlayer`+`AVPlayerLooper`+`AVPlayerLayer` via SwiftUI `NSViewRepresentable`; one random clip/break; audio on primary only; **gradient fallback when no clips bundled**
 - [x] Test: user-verified — video loops, fills the screen, text legible over footage, × works (tested locally with Pexels clips)
 - [x] Repo ships an empty `BreakVideos/` (README only) + gradient fallback; clip files stay local & git-ignored (license). Awaiting user's CC0/royalty-free clips to commit
-- [ ] (Follow-up) Soothing audio on *every* break — most stock clips are silent; add a dedicated ambient audio loop
+- [x] Ambient audio: optional looping `AVAudioPlayer` track on every break; video muted when a track plays; git-ignored & user-supplied (`BreakAudio/`) — user-verified
+- [x] **Open-source release prep:** lowered deployment target to macOS 14; proper README; audited repo (no secrets/team-IDs/paths); assets git-ignored
 
 ### Launch at login — ✅ done & user-verified
 - [x] `SMAppService.mainApp` register/unregister via a "Launch at Login" menu toggle
