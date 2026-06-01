@@ -83,11 +83,12 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Run: pushed `v1.0.0` → CI built & published `Horizon.dmg` (verified: mounts, valid ad-hoc-signed app)
 - [x] **Universal build** (arm64 + x86_64) + deployment target lowered to **macOS 13** (lowest with `SMAppService`) → runs on Intel *and* Apple Silicon, Ventura+ (shipped in v1.0.1)
 - [x] Note: download is gradient/silent (no bundled media) until CC0 assets are added
+- [x] **v1.0.2 released** (new logo: menu-bar + app icon; first release with the Ring Hero panel) — CI built & published the universal `Horizon.dmg`; verified the website's `releases/latest/download/Horizon.dmg` link resolves to v1.0.2 (302 → v1.0.2 asset → 200)
 
 ## UI — menu-bar panel redesign ("Ring Hero")
 - [x] Replaced `NSMenu` with a custom `NSPopover` hosting SwiftUI `MenuPanelView` + `MenuPanelModel`
 - [x] Hero progress ring (time-to-next-break) + Take a Break Now, Pause/Resume, interval/length ‹›steppers, launch-at-login toggle, Quit footer — light theme, green accent, matched to the uploaded design
 - [x] Compiles + 8 unit tests green; wired to the existing engine (no logic changes); design HTML git-ignored
 - [ ] Visual review on the user's Mac (⌘R → click the eye) + fine-tune spacing/colors to match exactly
-- [x] Menu-bar icon: replaced the `eye` symbol with the app logo (sun-over-horizon) as a code-drawn **template** image (`MenuBarIcon.swift`) — build + headless preview verified; pending user eyeball
-- [ ] *(Optional)* Set the app/Finder/DMG icon (AppIcon) to the full-colour logo (cream square + mark) too
+- [x] Menu-bar icon: replaced the `eye` symbol with the app logo (sun-over-horizon) as a code-drawn **template** image (`MenuBarIcon.swift`) — user-verified; shipped in v1.0.2
+- [x] App icon: generated the full 10-size macOS `AppIcon` set from the logo (cream square + marks, ~80% body margin) — shows in Finder, the `.dmg`, Login Items, Gatekeeper; shipped in v1.0.2
