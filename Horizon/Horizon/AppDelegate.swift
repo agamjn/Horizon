@@ -30,9 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "eye", accessibilityDescription: "Horizon")
-            image?.isTemplate = true
-            button.image = image
+            button.image = MenuBarIcon.image()      // Horizon logo (template — adapts to light/dark)
             button.action = #selector(togglePopover(_:))
             button.target = self
         }

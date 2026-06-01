@@ -89,3 +89,5 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Hero progress ring (time-to-next-break) + Take a Break Now, Pause/Resume, interval/length ‹›steppers, launch-at-login toggle, Quit footer — light theme, green accent, matched to the uploaded design
 - [x] Compiles + 8 unit tests green; wired to the existing engine (no logic changes); design HTML git-ignored
 - [ ] Visual review on the user's Mac (⌘R → click the eye) + fine-tune spacing/colors to match exactly
+- [x] Menu-bar icon: replaced the `eye` symbol with the app logo (sun-over-horizon) as a code-drawn **template** image (`MenuBarIcon.swift`) — build + headless preview verified; pending user eyeball
+- [ ] *(Optional)* Set the app/Finder/DMG icon (AppIcon) to the full-colour logo (cream square + mark) too

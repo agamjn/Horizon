@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Horizon">
+  <rect width="24" height="24" rx="5.5" fill="#f1efe9"/>
+  <line x1="4" y1="16" x2="20" y2="16" stroke="#18181a" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="7.5" y1="19" x2="16.5" y2="19" stroke="#18181a" stroke-width="1.6" stroke-linecap="round" opacity="0.32"/>
+  <path d="M6 16a6 6 0 0 1 12 0Z" fill="#18181a"/>
+</svg>
