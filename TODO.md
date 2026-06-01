@@ -83,3 +83,9 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Run: pushed `v1.0.0` → CI built & published `Horizon.dmg` (verified: mounts, valid ad-hoc-signed app)
 - [x] **Universal build** (arm64 + x86_64) + deployment target lowered to **macOS 13** (lowest with `SMAppService`) → runs on Intel *and* Apple Silicon, Ventura+ (shipped in v1.0.1)
 - [x] Note: download is gradient/silent (no bundled media) until CC0 assets are added
+
+## UI — menu-bar panel redesign ("Ring Hero")
+- [x] Replaced `NSMenu` with a custom `NSPopover` hosting SwiftUI `MenuPanelView` + `MenuPanelModel`
+- [x] Hero progress ring (time-to-next-break) + Take a Break Now, Pause/Resume, interval/length ‹›steppers, launch-at-login toggle, Quit footer — light theme, green accent, matched to the uploaded design
+- [x] Compiles + 8 unit tests green; wired to the existing engine (no logic changes); design HTML git-ignored
+- [ ] Visual review on the user's Mac (⌘R → click the eye) + fine-tune spacing/colors to match exactly

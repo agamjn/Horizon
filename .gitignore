@@ -37,5 +37,8 @@ Horizon/Horizon/BreakAudio/
 # Build artifacts from scripts/package.sh
 *.dmg
 
+# Design reference mockups (not part of the app)
+*.html
+
 # Misc
 *.log
