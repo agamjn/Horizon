@@ -21,6 +21,9 @@ final class MenuPanelModel: NSObject, ObservableObject {
     /// Set by AppDelegate to dismiss the popover (e.g. after "Take a Break Now").
     var onClose: (() -> Void)?
 
+    /// Set by AppDelegate to (re)open the first-launch welcome window.
+    var onShowWelcome: (() -> Void)?
+
     @Published private(set) var remaining: TimeInterval = 0
     @Published private(set) var interval: TimeInterval = BreakSettings.intervalSeconds
     @Published private(set) var isPaused = false
@@ -73,6 +76,12 @@ final class MenuPanelModel: NSObject, ObservableObject {
     func takeBreakNow() {
         onClose?()
         scheduler.triggerBreakNow()
+    }
+
+    /// Close the panel and open the welcome window (the panel's "About").
+    func showAbout() {
+        onClose?()
+        onShowWelcome?()
     }
 
     func togglePause() {

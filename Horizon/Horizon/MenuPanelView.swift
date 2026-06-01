@@ -136,12 +136,23 @@ struct MenuPanelView: View {
     }
 
     private var quitFooter: some View {
-        Button(action: model.quit) {
-            Text("Quit Horizon  ⌘Q")
-                .font(.system(size: 12))
-                .foregroundStyle(muted)
+        HStack {
+            Button(action: model.showAbout) {
+                Text("About")
+                    .font(.system(size: 12))
+                    .foregroundStyle(muted)
+            }
+            .buttonStyle(.plain)
+
+            Spacer()
+
+            Button(action: model.quit) {
+                Text("Quit Horizon  ⌘Q")
+                    .font(.system(size: 12))
+                    .foregroundStyle(muted)
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
         .padding(.top, 2)
     }
 

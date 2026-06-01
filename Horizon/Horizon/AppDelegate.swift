@@ -26,6 +26,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var popover: NSPopover?
     private var panelModel: MenuPanelModel?
 
+    /// First-launch welcome window (also re-openable from the panel's "About").
+    private let welcomeController = WelcomeController()
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
@@ -53,6 +56,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         self.popover = popover
 
         model.onClose = { [weak popover] in popover?.performClose(nil) }
+        model.onShowWelcome = { [weak self] in self?.showWelcome() }
+        welcomeController.onOpenHorizon = { [weak self] in self?.openPanel() }
+
+        // First launch: introduce the app and point the user to the menu-bar icon.
+        if !BreakSettings.hasSeenWelcome {
+            BreakSettings.hasSeenWelcome = true
+            welcomeController.show()
+        }
     }
 
     @objc private func togglePopover(_ sender: NSStatusBarButton) {
@@ -63,6 +74,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             NSApp.activate(ignoringOtherApps: true)
             popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
         }
+    }
+
+    /// Open the panel programmatically (used by the welcome's "Open Horizon" button).
+    /// Dispatched async so it runs after the welcome window has finished closing.
+    func openPanel() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self,
+                  let popover = self.popover,
+                  let button = self.statusItem?.button,
+                  !popover.isShown else { return }
+            NSApp.activate(ignoringOtherApps: true)
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        }
+    }
+
+    /// (Re)show the welcome window (used by the panel's "About").
+    func showWelcome() {
+        welcomeController.show()
     }
 
     // MARK: - NSPopoverDelegate
