@@ -29,6 +29,27 @@ screen right back.
 - **macOS 14 (Sonoma) or later**
 - **Xcode 15 or later** (free on the Mac App Store) — to build from source
 
+## Download (easiest — no Xcode)
+
+Grab the latest **`Horizon.dmg`** from the **[Releases page](https://github.com/agamjn/Horizon/releases/latest)**, open it, and drag **Horizon** into **Applications**.
+
+**First launch (one time).** Horizon isn't notarized (that requires a paid Apple account), so macOS blocks it the first time. To allow it:
+
+1. Double-click Horizon → you'll see *"Apple could not verify…"* → click **Done**.
+2. Open **System Settings ▸ Privacy & Security**, scroll to **Security**, and click **Open Anyway**.
+3. Click **Open Anyway** again and enter your password. Horizon opens and the 👁 icon appears in your menu bar.
+
+You won't be asked again *for this version*.
+
+> **Power-user shortcut** (skips all prompts) — after downloading, run once in Terminal:
+> ```sh
+> xattr -dr com.apple.quarantine /Applications/Horizon.app
+> ```
+
+**Updating.** Download the new `Horizon.dmg`, quit Horizon, and drag the new copy into Applications (choose **Replace**). Because the app is unsigned, macOS will ask you to **Open Anyway** once more for the new version (or just re-run the `xattr` command above).
+
+> 🎬 **Calming video/audio?** Downloads ship with a plain gradient — the sample nature clips are license-restricted and aren't bundled. See [Assets](#assets-break-video--audio) to drop in your own.
+
 ## Install (build from source)
 
 Horizon isn’t notarized for one‑click download yet, so for now you build it yourself — it only takes a minute:

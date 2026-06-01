@@ -34,5 +34,8 @@ Carthage/Build/
 Horizon/Horizon/BreakVideos/
 Horizon/Horizon/BreakAudio/
 
+# Build artifacts from scripts/package.sh
+*.dmg
+
 # Misc
 *.log

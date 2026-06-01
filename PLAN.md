@@ -278,3 +278,31 @@ Not needed for build-from-source.
 - **No unnecessary dependencies.** We build with Apple's system frameworks only. No cloning
   random third-party repos and no extra packages unless there's a clear, justified reason
   (discussed first).
+
+---
+
+## 12. Distribution — free unsigned download (with a paid upgrade path)
+
+*Researched & decided 2026-05-31 (deep-research report).* Goal: let people download and run
+Horizon **without Xcode** and **without the $99/yr Apple fee**.
+
+- **Reality:** there is **no free way** to avoid Gatekeeper's "unidentified developer"
+  warning — notarization requires the paid Developer Program. So the free download has a
+  **one-time** approval step.
+- **How (free, now):** `scripts/package.sh` builds Release, **ad-hoc signs** the app
+  (`codesign --sign -`), and makes a **`.dmg`** (`hdiutil` — no third-party tools). A
+  **GitHub Actions** workflow (`.github/workflows/release.yml`) runs it on every `v*` tag and
+  uploads the `.dmg` to **GitHub Releases** via the built-in `gh` CLI + `GITHUB_TOKEN`.
+- **User experience:** download `.dmg` → drag to Applications → first launch is blocked →
+  **System Settings ▸ Privacy & Security ▸ "Open Anyway"** + password (once per version).
+  Power users can instead run `xattr -dr com.apple.quarantine /Applications/Horizon.app`.
+- **Media caveat:** CI clones the repo, which has **no bundled clips** (git-ignored stock
+  footage), so the **downloaded app uses the gradient + silence** unless CC0 media is
+  committed. Shipping media in the download requires CC0/public-domain assets.
+- **Upgrade path (no lock-in):** later, enrol in the Developer Program and add Developer ID
+  signing + `notarytool` + `stapler` to the same pipeline → downloads & updates become
+  warning-free. Same code/repo/bundle id. (Switching signing identity resets TCC, so
+  post-Phase-2 users re-grant Calendar once.)
+- **Testing:** a packaging pipeline has no XCTest unit test; instead `scripts/package.sh`
+  carries smoke-test asserts (built `.app` exists, `codesign --verify` passes, `.dmg` mounts),
+  run locally and in CI, plus a real tagged CI release as the end-to-end check.

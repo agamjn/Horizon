@@ -71,6 +71,14 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [ ] Commit "Phase 2: skip during meetings and full-screen"
 
 ## Phase 3 — Polish & release  *(later)*
-- [ ] App icon; README with demo GIF + build-from-source steps
-- [ ] Flip repo **public**; tag `v1.0`
-- [ ] *(Optional, paid)* Developer ID signing + notarization for prebuilt downloads
+- [ ] App icon; README with demo GIF
+- [x] Flip repo **public** (done — github.com/agamjn/Horizon)
+- [ ] *(Optional, paid)* Developer ID signing + notarization for warning-free downloads/updates
+
+## Distribution — free unsigned download
+- [ ] `scripts/package.sh`: Release build + ad-hoc sign + `.dmg` (hdiutil) + smoke-test asserts
+- [ ] `.github/workflows/release.yml`: on `v*` tag → run script → upload `.dmg` to GitHub Releases (gh CLI + GITHUB_TOKEN)
+- [ ] README: "Download" + first-launch "Open Anyway" + "Updating" + `xattr` one-liner
+- [ ] Verify (local): run `package.sh` → valid launchable `.app` + mountable `.dmg`
+- [ ] Run: push a `v*` tag → CI builds & publishes the release `.dmg`
+- [ ] Note: downloaded app is gradient/silent (no bundled media) until CC0 assets are added
