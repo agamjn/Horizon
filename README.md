@@ -26,7 +26,7 @@ screen right back.
 
 ## Requirements
 
-- **macOS 14 (Sonoma) or later**
+- **macOS 13 (Ventura) or later** — Apple Silicon *or* Intel (universal build)
 - **Xcode 15 or later** (free on the Mac App Store) — to build from source
 
 ## Download (easiest — no Xcode)

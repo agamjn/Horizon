@@ -19,6 +19,7 @@ echo "▶ Building ${SCHEME} (Release)…"
 rm -rf "$BUILD_DIR" "$DMG"
 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -configuration Release \
   -derivedDataPath "$BUILD_DIR" \
+  ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
   CODE_SIGNING_ALLOWED=NO \
   build
 
@@ -32,7 +33,10 @@ echo "▶ Smoke tests…"
 codesign --verify --strict "$APP"
 [ -x "${APP}/Contents/MacOS/${APP_NAME}" ] || { echo "✗ executable missing"; exit 1; }
 /usr/bin/file "${APP}/Contents/MacOS/${APP_NAME}" | grep -q "Mach-O" || { echo "✗ not a Mach-O binary"; exit 1; }
-echo "  ✓ app exists, is a Mach-O binary, and its ad-hoc signature verifies"
+ARCHS_FOUND="$(lipo -archs "${APP}/Contents/MacOS/${APP_NAME}")"
+echo "$ARCHS_FOUND" | grep -q "arm64"  || { echo "✗ missing arm64 slice"; exit 1; }
+echo "$ARCHS_FOUND" | grep -q "x86_64" || { echo "✗ missing x86_64 slice (not universal)"; exit 1; }
+echo "  ✓ app valid, ad-hoc signature verifies, universal ($ARCHS_FOUND)"
 
 echo "▶ Building ${DMG}…"
 STAGE="$(mktemp -d)"

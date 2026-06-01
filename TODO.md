@@ -75,10 +75,11 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done & verified
 - [x] Flip repo **public** (done — github.com/agamjn/Horizon)
 - [ ] *(Optional, paid)* Developer ID signing + notarization for warning-free downloads/updates
 
-## Distribution — free unsigned download
-- [ ] `scripts/package.sh`: Release build + ad-hoc sign + `.dmg` (hdiutil) + smoke-test asserts
-- [ ] `.github/workflows/release.yml`: on `v*` tag → run script → upload `.dmg` to GitHub Releases (gh CLI + GITHUB_TOKEN)
-- [ ] README: "Download" + first-launch "Open Anyway" + "Updating" + `xattr` one-liner
-- [ ] Verify (local): run `package.sh` → valid launchable `.app` + mountable `.dmg`
-- [ ] Run: push a `v*` tag → CI builds & publishes the release `.dmg`
-- [ ] Note: downloaded app is gradient/silent (no bundled media) until CC0 assets are added
+## Distribution — free unsigned download — ✅ live (v1.0.0)
+- [x] `scripts/package.sh`: Release build + ad-hoc sign + `.dmg` (hdiutil) + smoke-test asserts
+- [x] `.github/workflows/release.yml`: on `v*` tag → build → upload `.dmg` to GitHub Releases (gh CLI)
+- [x] README: "Download" + first-launch "Open Anyway" + "Updating" + `xattr` one-liner
+- [x] Verify (local): `package.sh` → valid launchable `.app` + mountable `.dmg`
+- [x] Run: pushed `v1.0.0` → CI built & published `Horizon.dmg` (verified: mounts, valid ad-hoc-signed app)
+- [x] **Universal build** (arm64 + x86_64) + deployment target lowered to **macOS 13** (lowest with `SMAppService`) → runs on Intel *and* Apple Silicon, Ventura+ (shipped in v1.0.1)
+- [x] Note: download is gradient/silent (no bundled media) until CC0 assets are added
