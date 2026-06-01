@@ -39,6 +39,8 @@ Horizon/Horizon/BreakAudio/
 
 # Design reference mockups (not part of the app)
 *.html
+# ...but DO track the DMG install guide — package.sh bundles it inside the .dmg
+!scripts/dmg/open-me-first.html
 
 # Misc
 *.log

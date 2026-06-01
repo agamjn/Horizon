@@ -42,6 +42,13 @@ echo "▶ Building ${DMG}…"
 STAGE="$(mktemp -d)"
 cp -R "$APP" "${STAGE}/"
 ln -s /Applications "${STAGE}/Applications"
+
+# Bundle the first-run install guide so it sits next to the app in the DMG window —
+# it walks first-time users past the one-time Gatekeeper ("Apple could not verify") prompt.
+DMG_GUIDE="scripts/dmg/open-me-first.html"
+[ -f "$DMG_GUIDE" ] || { echo "✗ DMG guide not found at $DMG_GUIDE"; exit 1; }
+cp "$DMG_GUIDE" "${STAGE}/Open Me First.html"
+
 hdiutil create -volname "${APP_NAME}" -srcfolder "${STAGE}" -ov -format UDZO "${DMG}" >/dev/null
 rm -rf "${STAGE}"
 
