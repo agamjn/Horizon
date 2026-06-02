@@ -43,11 +43,17 @@ STAGE="$(mktemp -d)"
 cp -R "$APP" "${STAGE}/"
 ln -s /Applications "${STAGE}/Applications"
 
-# Bundle the first-run install guide so it sits next to the app in the DMG window —
-# it walks first-time users past the one-time Gatekeeper ("Apple could not verify") prompt.
-DMG_GUIDE="scripts/dmg/open-me-first.html"
-[ -f "$DMG_GUIDE" ] || { echo "✗ DMG guide not found at $DMG_GUIDE"; exit 1; }
-cp "$DMG_GUIDE" "${STAGE}/Open Me First.html"
+# Style the DMG window: a background image (install steps + how to get past the one-time
+# Gatekeeper "Apple could not verify" prompt) plus the pre-baked .DS_Store from
+# scripts/dmg/author-layout.sh (window size, icon positions, background reference). This
+# needs no Finder/AppleScript at build time, so it works on headless CI.
+DMG_BG="scripts/dmg/background.png"
+DMG_DS="scripts/dmg/DS_Store"
+[ -f "$DMG_BG" ] || { echo "✗ DMG background not found at $DMG_BG"; exit 1; }
+[ -f "$DMG_DS" ] || { echo "✗ DMG .DS_Store not found at $DMG_DS"; exit 1; }
+mkdir "${STAGE}/.background"
+cp "$DMG_BG" "${STAGE}/.background/background.png"
+cp "$DMG_DS" "${STAGE}/.DS_Store"
 
 hdiutil create -volname "${APP_NAME}" -srcfolder "${STAGE}" -ov -format UDZO "${DMG}" >/dev/null
 rm -rf "${STAGE}"

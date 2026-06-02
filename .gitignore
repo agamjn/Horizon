@@ -32,15 +32,15 @@ Carthage/Build/
 # they're absent (see the "Assets" section of the README). Truly CC0 / public-domain files
 # may be committed via explicit exceptions below.
 Horizon/Horizon/BreakVideos/
-Horizon/Horizon/BreakAudio/
+Horizon/Horizon/BreakAudio/*
+# ...except our own synthesized, license-free ambient track, which we DO ship.
+!Horizon/Horizon/BreakAudio/ambient-noise.m4a
 
 # Build artifacts from scripts/package.sh
 *.dmg
 
 # Design reference mockups (not part of the app)
 *.html
-# ...but DO track the DMG install guide — package.sh bundles it inside the .dmg
-!scripts/dmg/open-me-first.html
 
 # Misc
 *.log

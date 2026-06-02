@@ -24,8 +24,6 @@ final class OverlayController: NSObject {
     private var safetyTimer: Timer?
     private var isShowing = false
     private var breakStartedAt: Date?
-    private var currentClip: URL?
-    private var videoMuted = false
     private let ambientPlayer = AmbientAudioPlayer()
 
     /// Called when a break finishes (via × or the timeout). The scheduler uses
@@ -50,15 +48,11 @@ final class OverlayController: NSObject {
         breakStartedAt = Date()
         currentDuration = BreakSettings.durationSeconds
 
-        // One random clip per break, played only on the primary screen.
-        currentClip = BreakVideoLibrary.randomClip()
-
-        // Optional ambient audio. When a track plays, the video is muted so the
-        // soothing audio is consistent regardless of which clip is showing.
+        // Optional ambient audio plays during the break. The screen itself stays
+        // black so the user looks *away* from the display rather than at it.
         if let track = BreakAudioLibrary.randomTrack() {
             ambientPlayer.start(url: track)
         }
-        videoMuted = ambientPlayer.isPlaying
 
         // Bring Horizon forward so the borderless windows can become key and
         // absorb keyboard input.
@@ -118,12 +112,11 @@ final class OverlayController: NSObject {
         for window in windows { window.orderOut(nil) }
         windows.removeAll()
 
-        // The screen the user is currently on gets the close button + the video.
+        // Only the screen the user is currently on gets the close button.
         let primaryScreen = NSScreen.main ?? NSScreen.screens.first
         for screen in NSScreen.screens {
             let isPrimary = (screen == primaryScreen)
-            let window = makeWindow(for: screen, isPrimary: isPrimary,
-                                    videoURL: isPrimary ? currentClip : nil, seconds: remaining)
+            let window = makeWindow(for: screen, isPrimary: isPrimary, seconds: remaining)
             window.alphaValue = 0
             windows.append(window)
             window.makeKeyAndOrderFront(nil)
@@ -148,7 +141,7 @@ final class OverlayController: NSObject {
         endBreak()
     }
 
-    private func makeWindow(for screen: NSScreen, isPrimary: Bool, videoURL: URL?, seconds: Int) -> BreakOverlayWindow {
+    private func makeWindow(for screen: NSScreen, isPrimary: Bool, seconds: Int) -> BreakOverlayWindow {
         let window = BreakOverlayWindow(
             contentRect: screen.frame,
             styleMask: .borderless,
@@ -163,8 +156,7 @@ final class OverlayController: NSObject {
         window.hasShadow = false
         window.isReleasedWhenClosed = false
 
-        let view = BreakView(totalSeconds: seconds, showsCloseButton: isPrimary,
-                             videoURL: videoURL, videoMuted: videoMuted) { [weak self] in
+        let view = BreakView(totalSeconds: seconds, showsCloseButton: isPrimary) { [weak self] in
             self?.endBreak()
         }
         window.contentView = NSHostingView(rootView: view)
