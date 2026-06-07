@@ -10,7 +10,7 @@ every 20 minutes it blacks out your screen for 20 seconds and nudges you to look
 
 i stare at a screen ~10 hours a day and my eyes were wrecked, so i built this. the break is a plain black screen on purpose: the whole point is to look *away* from the display, not at a pretty one. there's soft ambient sound too.
 
-> **first launch:** horizon isn't notarized (that needs a paid apple account), so macOS says *"can't be verified."* click **Done**, then open **System Settings → Privacy & Security** and hit **Open Anyway**. just once.
+> **first launch:** horizon isn't notarized yet, so macOS says *"can't be verified."* click **Done**, then open **System Settings → Privacy & Security** and hit **Open Anyway**. just once.
 
 ### build it yourself
 

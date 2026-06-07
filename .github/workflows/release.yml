@@ -27,4 +27,4 @@ jobs:
         run: |
           gh release create "${GITHUB_REF_NAME}" Horizon.dmg \
             --title "Horizon ${GITHUB_REF_NAME}" \
-            --notes "Download Horizon.dmg, drag Horizon into Applications, and open it. First launch is blocked by macOS because the app is not notarized (that needs a paid Apple account): open System Settings > Privacy & Security > Security and click 'Open Anyway', then confirm with your password. See the README for screenshots and an optional Terminal one-liner. Note: this build uses a calm gradient with no bundled video/audio (the sample clips are license-restricted) — see the README to add your own."
+            --notes "Download Horizon.dmg, drag Horizon into Applications, and open it. First launch is blocked by macOS because the app isn't notarized yet: open System Settings > Privacy & Security > Security and click 'Open Anyway', then confirm with your password. See the README for the full first-launch steps and an optional Terminal one-liner. The break is a calm black screen with soft ambient sound."
